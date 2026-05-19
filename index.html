@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gabor-Granger Code Generator</title>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #1e293b;
+      --card: #ffffff;
+      --card-soft: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #dbe3ef;
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --accent: #22c55e;
+      --accent-dark: #16a34a;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --code-bg: #020617;
+      --code-text: #d1fae5;
+      --shadow: 0 14px 35px rgba(0, 0, 0, 0.2);
+      --radius: 14px;
+      --radius-sm: 9px;
+
+      /* Topbar (theme-aware, no hardcoded white that breaks light theme) */
+      --topbar-bg: rgba(255, 255, 255, 0.12);
+      --topbar-border: rgba(255, 255, 255, 0.18);
+      --topbar-text: #ffffff;
+      --topbar-text-dim: rgba(255, 255, 255, 0.75);
+      --topbar-select-bg: rgba(255, 255, 255, 0.18);
+      --topbar-select-border: rgba(255, 255, 255, 0.35);
+      --topbar-select-text: #ffffff;
+      --topbar-select-option-text: #111827;
+      --topbar-select-option-bg: #ffffff;
+    }
+
+    /* ===== Themes ===== */
+
+    body[data-theme="midnight"] {
+      --bg: #020617;
+      --bg-soft: #312e81;
+      --card: #0f172a;
+      --card-soft: #111827;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #334155;
+      --primary: #818cf8;
+      --primary-dark: #6366f1;
+      --accent: #22c55e;
+      --accent-dark: #16a34a;
+      --code-bg: #000000;
+      --code-text: #bbf7d0;
+
+      --topbar-bg: rgba(255, 255, 255, 0.08);
+      --topbar-border: rgba(255, 255, 255, 0.16);
+      --topbar-text: #ffffff;
+      --topbar-text-dim: rgba(255, 255, 255, 0.78);
+      --topbar-select-bg: rgba(255, 255, 255, 0.12);
+      --topbar-select-border: rgba(255, 255, 255, 0.28);
+      --topbar-select-text: #ffffff;
+      --topbar-select-option-text: #0f172a;
+      --topbar-select-option-bg: #ffffff;
+    }
+
+    body[data-theme="ocean"] {
+      --bg: #082f49;
+      --bg-soft: #0891b2;
+      --card: #ecfeff;
+      --card-soft: #cffafe;
+      --text: #083344;
+      --muted: #0e7490;
+      --border: #67e8f9;
+      --primary: #0891b2;
+      --primary-dark: #0e7490;
+      --accent: #06b6d4;
+      --accent-dark: #0891b2;
+      --code-bg: #042f2e;
+      --code-text: #ccfbf1;
+
+      --topbar-bg: rgba(255, 255, 255, 0.16);
+      --topbar-border: rgba(255, 255, 255, 0.26);
+      --topbar-text: #ffffff;
+      --topbar-text-dim: rgba(255, 255, 255, 0.82);
+      --topbar-select-bg: rgba(255, 255, 255, 0.22);
+      --topbar-select-border: rgba(255, 255, 255, 0.38);
+      --topbar-select-text: #ffffff;
+      --topbar-select-option-text: #083344;
+      --topbar-select-option-bg: #ffffff;
+    }
+
+    body[data-theme="forest"] {
+      --bg: #052e16;
+      --bg-soft: #166534;
+      --card: #f0fdf4;
+      --card-soft: #dcfce7;
+      --text: #052e16;
+      --muted: #15803d;
+      --border: #86efac;
+      --primary: #16a34a;
+      --primary-dark: #15803d;
+      --accent: #65a30d;
+      --accent-dark: #4d7c0f;
+      --code-bg: #022c22;
+      --code-text: #bbf7d0;
+
+      --topbar-bg: rgba(255, 255, 255, 0.14);
+      --topbar-border: rgba(255, 255, 255, 0.24);
+      --topbar-text: #ffffff;
+      --topbar-text-dim: rgba(255, 255, 255, 0.82);
+      --topbar-select-bg: rgba(255, 255, 255, 0.2);
+      --topbar-select-border: rgba(255, 255, 255, 0.36);
+      --topbar-select-text: #ffffff;
+      --topbar-select-option-text: #052e16;
+      --topbar-select-option-bg: #ffffff;
+    }
+
+    body[data-theme="sunset"] {
+      --bg: #7c2d12;
+      --bg-soft: #be123c;
+      --card: #fff7ed;
+      --card-soft: #ffedd5;
+      --text: #431407;
+      --muted: #c2410c;
+      --border: #fed7aa;
+      --primary: #f97316;
+      --primary-dark: #ea580c;
+      --accent: #e11d48;
+      --accent-dark: #be123c;
+      --code-bg: #431407;
+      --code-text: #ffedd5;
+
+      --topbar-bg: rgba(255, 255, 255, 0.16);
+      --topbar-border: rgba(255, 255, 255, 0.28);
+      --topbar-text: #ffffff;
+      --topbar-text-dim: rgba(255, 255, 255, 0.82);
+      --topbar-select-bg: rgba(255, 255, 255, 0.22);
+      --topbar-select-border: rgba(255, 255, 255, 0.38);
+      --topbar-select-text: #ffffff;
+      --topbar-select-option-text: #431407;
+      --topbar-select-option-bg: #ffffff;
+    }
+
+    body[data-theme="rose"] {
+      --bg: #831843;
+      --bg-soft: #be185d;
+      --card: #fff1f2;
+      --card-soft: #ffe4e6;
+      --text: #4c0519;
+      --muted: #be123c;
+      --border: #fecdd3;
+      --primary: #e11d48;
+      --primary-dark: #be123c;
+      --accent: #db2777;
+      --accent-dark: #be185d;
+      --code-bg: #500724;
+      --code-text: #ffe4e6;
+
+      --topbar-bg: rgba(255, 255, 255, 0.16);
+      --topbar-border: rgba(255, 255, 255, 0.28);
+      --topbar-text: #ffffff;
+      --topbar-text-dim: rgba(255, 255, 255, 0.82);
+      --topbar-select-bg: rgba(255, 255, 255, 0.22);
+      --topbar-select-border: rgba(255, 255, 255, 0.38);
+      --topbar-select-text: #ffffff;
+      --topbar-select-option-text: #4c0519;
+      --topbar-select-option-bg: #ffffff;
+    }
+
+    body[data-theme="slate"] {
+      --bg: #334155;
+      --bg-soft: #64748b;
+      --card: #f8fafc;
+      --card-soft: #f1f5f9;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --primary: #475569;
+      --primary-dark: #334155;
+      --accent: #64748b;
+      --accent-dark: #475569;
+      --code-bg: #0f172a;
+      --code-text: #e2e8f0;
+
+      --topbar-bg: rgba(255, 255, 255, 0.16);
+      --topbar-border: rgba(255, 255, 255, 0.26);
+      --topbar-text: #ffffff;
+      --topbar-text-dim: rgba(255, 255, 255, 0.82);
+      --topbar-select-bg: rgba(255, 255, 255, 0.22);
+      --topbar-select-border: rgba(255, 255, 255, 0.38);
+      --topbar-select-text: #ffffff;
+      --topbar-select-option-text: #0f172a;
+      --topbar-select-option-bg: #ffffff;
+    }
+
+    /* ===== LIGHT THEME — FIXED ===== */
+    body[data-theme="light"] {
+      --bg: #e8ecf8;
+      --bg-soft: #f8fafc;
+      --card: #ffffff;
+      --card-soft: #f8fafc;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #d1d5db;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #16a34a;
+      --accent-dark: #15803d;
+      --code-bg: #0f172a;        /* keep code dark for readability */
+      --code-text: #dcfce7;
+
+      --topbar-bg: rgba(15, 23, 42, 0.06);
+      --topbar-border: rgba(15, 23, 42, 0.12);
+      --topbar-text: #0f172a;
+      --topbar-text-dim: rgba(15, 23, 42, 0.72);
+      --topbar-select-bg: #ffffff;
+      --topbar-select-border: #cbd5e1;
+      --topbar-select-text: #0f172a;
+      --topbar-select-option-text: #0f172a;
+      --topbar-select-option-bg: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background:
+        radial-gradient(circle at top left, var(--bg-soft), transparent 38%),
+        linear-gradient(135deg, var(--bg), var(--bg-soft));
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      background: var(--topbar-bg);
+      border: 1px solid var(--topbar-border);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+    }
+
+    .brand h2 {
+      margin: 0;
+      color: var(--topbar-text);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--topbar-text-dim);
+      font-size: 12px;
+    }
+
+    .theme-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--topbar-text);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .theme-control select {
+      width: auto;
+      min-width: 130px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--topbar-select-border);
+      background: var(--topbar-select-bg);
+      color: var(--topbar-select-text);
+      outline: none;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .theme-control option {
+      color: var(--topbar-select-option-text);
+      background: var(--topbar-select-option-bg);
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 0.82fr 1.18fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .inputs,
+    .output {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 11px 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .panel-header h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+
+    .panel-header span {
+      font-size: 11px;
+      opacity: 0.85;
+      font-weight: 600;
+    }
+
+    .panel-body {
+      padding: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 110px;
+      gap: 10px;
+    }
+
+    .input-group {
+      margin-bottom: 11px;
+    }
+
+    .input-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .hint {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 8px 9px;
+      margin: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card-soft);
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: 0.18s ease;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+      background: var(--card);
+    }
+
+    textarea {
+      height: 70px;
+      resize: vertical;
+      line-height: 1.35;
+    }
+
+    #priceLabels { height: 80px; }
+    #scaleLabels { height: 92px; }
+
+    .scale-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      transition: 0.18s ease;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px 12px;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      box-shadow: 0 7px 16px rgba(0, 0, 0, 0.18);
+    }
+
+    .btn.copy {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    }
+
+    .btn.ghost {
+      flex: 0 0 auto;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: none;
+      font-weight: 800;
+      padding: 9px 12px;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .output {
+      position: sticky;
+      top: 16px;
+    }
+
+    .output .panel-header {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    }
+
+    pre {
+      margin: 0;
+      min-height: 590px;
+      max-height: calc(100vh - 150px);
+      overflow: auto;
+      padding: 14px;
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 0;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    pre:empty::before {
+      content: "Generated survey code will appear here after clicking “Generate Code”.";
+      color: rgba(255, 255, 255, 0.45);
+      font-style: italic;
+    }
+
+    pre::-webkit-scrollbar,
+    textarea::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    pre::-webkit-scrollbar-track,
+    textarea::-webkit-scrollbar-track {
+      background: rgba(148, 163, 184, 0.18);
+    }
+
+    pre::-webkit-scrollbar-thumb,
+    textarea::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 999px;
+    }
+
+    .mini-note {
+      margin-top: 9px;
+      padding: 8px 10px;
+      border-radius: 9px;
+      background: var(--card-soft);
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .alert {
+      color: var(--danger);
+      font-size: 12px;
+      margin-top: 6px;
+      font-weight: 800;
+    }
+
+    /* Advanced / Validation (additive) */
+    details.advanced {
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      background: var(--card-soft);
+    }
+    details.advanced summary {
+      cursor: pointer;
+      font-weight: 900;
+      color: var(--text);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+    details.advanced summary::-webkit-details-marker { display: none; }
+    .adv-grid { margin-top: 12px; display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .adv-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; background: var(--card); }
+    .adv-card h4 { margin: 0 0 8px; font-size: .95rem; font-weight: 900; color: var(--text); }
+    .adv-card ul { margin: 0; padding-left: 20px; }
+    .adv-card li { margin: 4px 0; font-size: .9rem; }
+    .adv-card .ok { color: var(--accent-dark); font-weight: 900; }
+    .adv-card .warn { color: var(--warning); font-weight: 900; }
+    .adv-card .err { color: var(--danger); font-weight: 900; }
+    .adv-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+    /* Toast (additive) */
+    #toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(120%); background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; box-shadow: var(--shadow); font-weight: 900; font-size: .95rem; opacity: 0; transition: transform .25s ease, opacity .25s ease; pointer-events: none; z-index: 9999; }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    #toast.success { border-color: color-mix(in srgb, var(--accent) 30%, var(--border)); }
+    #toast.warn { border-color: color-mix(in srgb, var(--warning) 30%, var(--border)); }
+    #toast.error { border-color: color-mix(in srgb, var(--danger) 30%, var(--border)); }
+
+    @media (max-width: 980px) {
+      .container { grid-template-columns: 1fr; }
+      .output { position: static; }
+      pre { min-height: 360px; max-height: 520px; }
+    }
+
+    @media (max-width: 620px) {
+      .page { padding: 10px; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .brand h2 { font-size: 19px; }
+      .theme-control { width: 100%; justify-content: space-between; }
+      .theme-control select { flex: 1; }
+      .form-grid, .scale-grid { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+      pre { font-size: 11.5px; }
+    }
+  </style>
+</head>
+
+<body data-theme="midnight">
+
+<div class="page">
+
+  <div class="topbar">
+    <div class="brand">
+      <h2>Gabor-Granger Code Generator</h2>
+      <p>Compact generator for price-routing survey code</p>
+    </div>
+
+    <div class="theme-control">
+      <span>Theme</span>
+      <select id="themeSelect">
+        <option value="midnight">Midnight</option>
+        <option value="ocean">Ocean</option>
+        <option value="forest">Forest</option>
+        <option value="sunset">Sunset</option>
+        <option value="rose">Rose</option>
+        <option value="slate">Slate</option>
+        <option value="light">Light</option>
+      </select>
+      <span style="opacity:.8; font-weight:700;">⌘/Ctrl+Enter • ⌘/Ctrl+Shift+C</span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="inputs">
+      <div class="panel-header">
+        <h3>Setup</h3>
+        <span>Configure inputs</span>
+      </div>
+
+      <div class="panel-body">
+
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="Qid">
+              Question ID
+              <span class="hint">prefix</span>
+            </label>
+            <input type="text" id="Qid" value="Q10x">
+            <div id="qidWarn" class="alert" style="display:none;"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="questions">
+              Questions
+              <span class="hint">count</span>
+            </label>
+            <input type="number" id="questions" value="4" min="1">
+          </div>
+
+          <div class="input-group full">
+            <label for="qtext">
+              Question Text
+              <span class="hint">shown with each price</span>
+            </label>
+            <input type="text" id="qtext" value="Agree to buy at ...">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="priceLabels">
+            Price Labels
+            <span class="hint">high to low</span>
+          </label>
+          <textarea id="priceLabels">Price 1
+Price 2
+Price 3
+Price 4</textarea>
+        </div>
+
+        <div class="input-group">
+          <label for="scaleLabels">
+            Scale Options
+            <span class="hint">one per line</span>
+          </label>
+          <textarea id="scaleLabels">1. Would not consider
+2
+3
+4
+5. Would strongly consider</textarea>
+        </div>
+
+        <div class="scale-grid">
+          <div class="input-group">
+            <label for="positiveScale">
+              Positive Scale
+              <span class="hint">Yes</span>
+            </label>
+            <textarea id="positiveScale">r4
+r5</textarea>
+          </div>
+
+          <div class="input-group">
+            <label for="negativeScale">
+              Negative Scale
+              <span class="hint">No</span>
+            </label>
+            <textarea id="negativeScale">r1
+r2
+r3</textarea>
+          </div>
+        </div>
+
+        <div class="mini-note">
+          Positive responses are converted to <b>Yes</b>. Negative responses are converted to <b>No</b>.
+        </div>
+
+        <div class="actions">
+          <button class="btn" onclick="generateCode()">Generate Code</button>
+          <button class="btn copy" onclick="copyCode()">📋 Copy Code</button>
+          <button class="btn ghost" id="downloadBtn">⬇️ Download .xml</button>
+          <button class="btn ghost" id="resetBtn" title="Restore original defaults">↺ Reset</button>
+        </div>
+
+        <details class="advanced">
+          <summary>⚙️ Advanced / Validation (non-blocking)</summary>
+          <div class="adv-grid">
+            <div class="adv-card">
+              <h4>Validation checks</h4>
+              <ul id="validationList">
+                <li class="ok">Ready to generate</li>
+              </ul>
+              <div class="adv-actions">
+                <button class="btn ghost" id="shareBtn">🔗 Copy shareable link</button>
+                <span style="font-size:.82rem; color:var(--muted); font-weight:800;">Link restores inputs (no change to output)</span>
+              </div>
+            </div>
+            <div class="adv-card">
+              <h4>Notes</h4>
+              <ul>
+                <li>All new features are additive and never modify the generated XML.</li>
+                <li>Live preview updates on input (debounced). Manual Generate also works.</li>
+                <li>QID sanitization is <em>warn-only</em> (we don’t mutate the value used for generation).</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </div>
+
+    <div class="output">
+      <div class="panel-header">
+        <h3>Output</h3>
+        <span>Generated code</span>
+      </div>
+
+      <pre id="output" tabindex="0"></pre>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  /* ---------- Defaults (original) ---------- */
+  const DEFAULTS = {
+    Qid: "Q10x",
+    questions: 4,
+    qtext: "Agree to buy at ...",
+    priceLabels: "Price 1\nPrice 2\nPrice 3\nPrice 4",
+    scaleLabels: "1. Would not consider\n2\n3\n4\n5. Would strongly consider",
+    positiveScale: "r4\nr5",
+    negativeScale: "r1\nr2\nr3"
+  };
+
+  /* ---------- Theme ---------- */
+  function setTheme(theme) {
+    document.body.setAttribute("data-theme", theme);
+    localStorage.setItem("ggTheme", theme);
+    const sel = document.getElementById("themeSelect");
+    if (sel && sel.value !== theme) sel.value = theme;
+  }
+  (function initTheme() {
+    const savedTheme = localStorage.getItem("ggTheme") || "midnight";
+    document.body.setAttribute("data-theme", savedTheme);
+    // Initialize select (works even if DOMContentLoaded already fired)
+    const themeSelect = document.getElementById("themeSelect");
+    if (themeSelect) {
+      themeSelect.value = savedTheme;
+      themeSelect.addEventListener("change", () => setTheme(themeSelect.value));
+    }
+  })();
+
+  /* ---------- Toast ---------- */
+  let toastTimer = null;
+  function showToast(msg, type /* 'success'|'warn'|'error' */) {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+    toast.textContent = msg || "";
+    toast.className = "show " + (type || "success");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.className = ""; }, 2200);
+  }
+
+  /* ---------- Inputs helpers ---------- */
+  function getInputs() {
+    return {
+      Qid: document.getElementById("Qid").value,
+      questions: document.getElementById("questions").value,
+      qtext: document.getElementById("qtext").value,
+      priceLabels: document.getElementById("priceLabels").value,
+      scaleLabels: document.getElementById("scaleLabels").value,
+      positiveScale: document.getElementById("positiveScale").value,
+      negativeScale: document.getElementById("negativeScale").value
+    };
+  }
+  function setInputs(obj) {
+    if (!obj) return;
+    if (obj.Qid !== undefined) document.getElementById("Qid").value = obj.Qid;
+    if (obj.questions !== undefined) document.getElementById("questions").value = obj.questions;
+    if (obj.qtext !== undefined) document.getElementById("qtext").value = obj.qtext;
+    if (obj.priceLabels !== undefined) document.getElementById("priceLabels").value = obj.priceLabels;
+    if (obj.scaleLabels !== undefined) document.getElementById("scaleLabels").value = obj.scaleLabels;
+    if (obj.positiveScale !== undefined) document.getElementById("positiveScale").value = obj.positiveScale;
+    if (obj.negativeScale !== undefined) document.getElementById("negativeScale").value = obj.negativeScale;
+    runHygieneAndValidate();
+    debouncedGenerate();
+  }
+  function resetToDefaults() {
+    setInputs(DEFAULTS);
+    localStorage.removeItem("gg-inputs");
+    showToast("Reset to defaults", "success");
+  }
+
+  /* ---------- Hygiene + Validation (non-blocking) ---------- */
+  function sanitizeQid(s) { return (s || "").trim().replace(/[^A-Za-z0-9_]/g, ""); }
+  function runHygieneAndValidate() {
+    const QidEl = document.getElementById("Qid");
+    const qidWarnEl = document.getElementById("qidWarn");
+    const rawQid = QidEl.value;
+    const cleanQid = sanitizeQid(rawQid);
+    if (cleanQid !== rawQid) {
+      qidWarnEl.textContent = `QID should be letters/numbers/underscore only. Suggestion: "${cleanQid || 'Q1'}" (not auto-applied).`;
+      qidWarnEl.style.display = "block";
+    } else {
+      qidWarnEl.style.display = "none";
+    }
+
+    const issues = [];
+    const oks = [];
+    const inputs = getInputs();
+    const n = parseInt(inputs.questions);
+    const priceLabels = inputs.priceLabels.split("\n").map(l => l.trim()).filter(Boolean);
+    const scaleLabels = inputs.scaleLabels.split("\n").map(l => l.trim()).filter(Boolean);
+    const positiveScale = inputs.positiveScale.split("\n").map(l => l.trim()).filter(Boolean);
+    const negativeScale = inputs.negativeScale.split("\n").map(l => l.trim()).filter(Boolean);
+
+    if (!inputs.Qid || !inputs.Qid.trim()) issues.push({type:"warn", msg:"QID is empty."});
+    else oks.push("QID set.");
+
+    if (Number.isNaN(n) || n < 1) issues.push({type:"err", msg:"Number of Questions must be >= 1."});
+    else oks.push(`Questions: ${n}.`);
+
+    if (priceLabels.length < n) issues.push({type:"err", msg:`Need at least ${n} price label(s) (have ${priceLabels.length}).`});
+    else oks.push(`Price labels: ${priceLabels.length}.`);
+
+    if (scaleLabels.length < 2) issues.push({type:"err", msg:"Need at least 2 scale options."});
+    else oks.push(`Scale options: ${scaleLabels.length}.`);
+
+    const known = new Set(scaleLabels);
+    const unknownPos = positiveScale.filter(r => !known.has(r));
+    const unknownNeg = negativeScale.filter(r => !known.has(r));
+    if (unknownPos.length) issues.push({type:"warn", msg:`Positive scale references unknown codes: ${unknownPos.join(", ")}.`});
+    if (unknownNeg.length) issues.push({type:"warn", msg:`Negative scale references unknown codes: ${unknownNeg.join(", ")}.`});
+    if (!unknownPos.length && positiveScale.length) oks.push(`Positive codes valid (${positiveScale.length}).`);
+    if (!unknownNeg.length && negativeScale.length) oks.push(`Negative codes valid (${negativeScale.length}).`);
+
+    const dupScale = scaleLabels.filter((v,i,a)=>a.indexOf(v)!==i);
+    if (dupScale.length) issues.push({type:"warn", msg:`Duplicate scale labels: ${[...new Set(dupScale)].join(", ")}.`});
+
+    if (n > 20) issues.push({type:"warn", msg:"n > 20: output will be large (OK, but consider smaller)."});
+    if (!inputs.qtext || !inputs.qtext.trim()) issues.push({type:"warn", msg:"Question text is empty."});
+
+    const listEl = document.getElementById("validationList");
+    listEl.innerHTML = "";
+    if (oks.length) oks.forEach(m => { const li=document.createElement("li"); li.className="ok"; li.textContent="✓ " + m; listEl.appendChild(li); });
+    if (issues.length) issues.forEach(it => { const li=document.createElement("li"); li.className=it.type; li.textContent = (it.type==="err"?"⛔ ":"⚠️ ") + it.msg; listEl.appendChild(li); });
+    if (!issues.length) { const li=document.createElement("li"); li.className="ok"; li.textContent="✓ All checks passed."; listEl.appendChild(li); }
+  }
+
+  /* ---------- Persistence + URL share ---------- */
+  const STORAGE_KEY_INPUTS = "gg-inputs";
+  function saveInputsDebounced() { try { localStorage.setItem(STORAGE_KEY_INPUTS, JSON.stringify(getInputs())); } catch(e){} }
+  let saveTimer=null; function scheduleSave(){ if(saveTimer) clearTimeout(saveTimer); saveTimer=setTimeout(saveInputsDebounced, 300); }
+  function restoreInputsFromStorage() { try { const raw = localStorage.getItem(STORAGE_KEY_INPUTS); if (raw){ setInputs(JSON.parse(raw)); return true; } } catch(e){} return false; }
+  function encodeState(obj){ try { return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); } catch(e){ return ""; } }
+  function decodeState(s){ try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch(e){ return null; } }
+  function initFromUrl(){ try { const url=new URL(window.location.href); const cfg=url.searchParams.get("cfg"); if(cfg){ const obj=decodeState(cfg); if(obj){ setInputs(obj); showToast("Loaded config from link","success"); } } } catch(e){} }
+  function copyShareableLink(){ try { const url=new URL(window.location.href); url.searchParams.set("cfg", encodeState(getInputs())); navigator.clipboard.writeText(url.toString()).then(()=>showToast("Shareable link copied","success")).catch(()=>showToast("Copy failed","error")); } catch(e){ showToast("Copy failed","error"); } }
+
+  /* ---------- Live preview ---------- */
+  let genTimer=null;
+  function debouncedGenerate(){ if(genTimer) clearTimeout(genTimer); genTimer=setTimeout(()=>{ generateCode(); }, 300); }
+
+  /* ---------- Keyboard + buttons ---------- */
+  window.addEventListener("keydown", (e) => {
+    const isMac = navigator.platform.toUpperCase().includes("MAC");
+    const ctrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
+    if (ctrlOrCmd && e.key === "Enter") { e.preventDefault(); generateCode(); }
+    if (ctrlOrCmd && e.shiftKey && (e.key === "c" || e.key === "C")) { e.preventDefault(); copyCode(); }
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", resetToDefaults);
+  document.getElementById("downloadBtn").addEventListener("click", () => {
+    const text = document.getElementById("output").textContent || "";
+    if (!text.trim()) { showToast("Nothing to download", "warn"); return; }
+    const Qid = document.getElementById("Qid").value || "output";
+    const fname = `gabor-granger-${Qid.replace(/[^A-Za-z0-9_-]/g,"") || "output"}.xml`;
+    const blob = new Blob([text], { type: "application/xml" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = fname; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Downloaded " + fname, "success");
+  });
+  document.getElementById("shareBtn").addEventListener("click", copyShareableLink);
+
+  /* ---------- Wire inputs ---------- */
+  ["Qid","questions","qtext","priceLabels","scaleLabels","positiveScale","negativeScale"].forEach(id=>{
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("input", ()=>{ runHygieneAndValidate(); scheduleSave(); debouncedGenerate(); });
+    el.addEventListener("change", ()=>{ runHygieneAndValidate(); scheduleSave(); debouncedGenerate(); });
+  });
+
+  /* ---------- ORIGINAL GENERATOR LOGIC (UNCHANGED) ---------- */
+  function generateCode() {
+    const Qid = document.getElementById("Qid").value; // Get the custom Qid
+    const n = parseInt(document.getElementById("questions").value);
+    const qText = document.getElementById("qtext").value;
+
+    const priceLabels = document.getElementById("priceLabels").value.split("\n").map(l => l.trim()).filter(Boolean);
+    const scaleLabels = document.getElementById("scaleLabels").value.split("\n").map(l => l.trim()).filter(Boolean);
+    const positiveScale = document.getElementById("positiveScale").value.split("\n").map(l => l.trim()).filter(Boolean);
+    const negativeScale = document.getElementById("negativeScale").value.split("\n").map(l => l.trim()).filter(Boolean);
+
+    if (priceLabels.length < n) {
+      alert(`Please enter at least ${n} price labels.`);
+      return;
+    }
+
+    let code = "<exec>\n";
+    code += "p.first = 0\n";
+    for (let i = 1; i <= n; i++) code += `p.${Qid}${i} = 0\n`;
+    code += "</exec>\n\n<suspend/>\n\n";
+
+    code += `<radio label="${Qid}Qprice" optional="1" where="survey,execute,report">\n`;
+    code += `<title>Select the price level for the first question:</title>\n`;
+    priceLabels.forEach((label, idx) => {
+      code += `<col label="r${idx+1}" value="${idx+1}">${label}</col>\n`;
+    });
+    code += `</radio>\n\n<suspend/>\n\n`;
+
+    for (let i = 1; i <= n; i++) {
+      code += `<goto cond="(${Qid}Qprice.r${i})" target="${Qid}${i}_n"/>\n\n`;
+    }
+    code += "<suspend/>\n\n";
+
+    for (let i = 1; i <= n; i++) {
+      code += `<radio label="${Qid}${i}_n" cond="p.${Qid}${i}==0">\n`;
+      code += `<title>${qText}<br /><br /><b>${priceLabels[i-1]}</b></title>\n`;
+      code += `<exec>\np.${Qid}${i} = 1\n${Qid}Qprice2.val = ${i-1}\n</exec>\n\n`;
+      scaleLabels.forEach((label, idx) => {
+        code += `<col label="r${idx+1}" value="${idx+1}">${label}</col>\n`;
+      });
+      code += `</radio>\n<suspend/>\n`;
+
+      code += `<radio label="${Qid}${i}" optional="1" where="survey,execute,report">\n`;
+      code += `<title>${qText}<br /><br /><b>${priceLabels[i-1]}</b></title>\n`;
+      code += `<row label="r1">Yes</row>\n<row label="r2">No</row>\n</radio>\n\n<suspend/>\n`;
+
+      code += `<exec cond="${Qid}${i}_n.any">\n`;
+      code += `p.${Qid}${i} = 1\n`;
+      if (positiveScale.length) {
+        const yesLogic = positiveScale.map(r => `${Qid}${i}_n.${r}`).join(" or ");
+        code += `if ${yesLogic}:\n  ${Qid}${i}.val=0\n`;
+      }
+      if (negativeScale.length) {
+        const noLogic = negativeScale.map(r => `${Qid}${i}_n.${r}`).join(" or ");
+        code += `if ${noLogic}:\n  ${Qid}${i}.val=1\n`;
+      }
+      code += `</exec>\n\n<suspend/>\n`;
+
+      code += `<exec>\np.first = 1\n`;
+      for (let j = i+1; j <= n; j++) code += `if ${Qid}${i}.val == 0:\n  p.${Qid}${j} = 1\n`;
+      code += `#if ${Qid}${i}.val == 1:\n#  ${Qid}Qprice2.val = ${i-1}\n`;
+      code += `</exec>\n\n<suspend/>\n`;
+
+      if (i < n) code += `<goto cond="(${Qid}${i}.r2) and p.${Qid}${i+1} == 0" target="${Qid}${i+1}_n"/>\n\n`;
+      if (i > 1) code += `<goto cond="(${Qid}${i}.r1) and p.${Qid}${i-1} == 0" target="${Qid}${i-1}_n"/>\n\n`;
+      code += `<suspend/>\n\n`;
+    }
+
+    code += `<radio label="${Qid}Qprice2" cond="list=='99'" optional="1">\n`;
+    code += `<title>Random price shown last</title>\n`;
+    priceLabels.forEach((label, idx) => code += `<row label="r${idx+1}">${label}</row>\n`);
+    code += `</radio>\n\n<suspend/>`;
+
+    document.getElementById("output").textContent = code;
+  }
+
+  function copyCode() {
+    const text = document.getElementById("output").textContent;
+    if (!text) { showToast("Nothing to copy!", "warn"); return; }
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        showToast("✅ Code copied to clipboard!", "success");
+        const btn = document.querySelector(".btn.copy");
+        if (btn) { const old = btn.textContent; btn.textContent = "Copied ✓"; setTimeout(()=>btn.textContent=old, 1200); }
+        document.getElementById("output").focus();
+      })
+      .catch(() => showToast("❌ Copy failed. Try manually.", "error"));
+  }
+
+  /* ---------- Init ---------- */
+  (function init(){
+    if (!restoreInputsFromStorage()) { /* keep defaults */ }
+    initFromUrl();
+    runHygieneAndValidate();
+    generateCode(); // initial
+  })();
+</script>
+
+</body>
+</html>
