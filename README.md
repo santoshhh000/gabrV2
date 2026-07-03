@@ -1,4 +1,4 @@
-```markdown
+
 # 📊 Gabor-Granger Code Generator (gabrV2)
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -43,7 +43,7 @@ The Gabor-Granger technique is a classic pricing research method used to determi
 Visit the live demo: **[https://santoshhh000.github.io/gabrV2/](https://santoshhh000.github.io/gabrV2/)**
 
 ### Option 2: Run Locally
-```bash
+
 # Clone the repository
 git clone https://github.com/santoshhh000/gabrV2.git
 
@@ -52,7 +52,7 @@ cd gabrV2
 
 # Open index.html in any modern browser
 # No build step or dependencies required!
-```
+
 
 ## 📋 Configuration Guide
 
@@ -147,7 +147,6 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **santoshhh000**
 - GitHub: [@santoshhh000](https://github.com/santoshhh000)
-- Portfolio: [santoshhh000.github.io](https://santoshhh000.github.io/)
 
 ## 🙏 Acknowledgments
 
@@ -166,7 +165,7 @@ If you encounter any issues or have feature requests:
 ---
 
 *Built with ❤️ for the market research community*
-```
+
 
 ## 📝 Key Highlights of this ABOUT file:
 
